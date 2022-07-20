@@ -177,6 +177,7 @@ else
   COMMAND="hub api --method PATCH repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"
   echo -e "Running: ${COMMAND}"
   URL=$(sh -c "${COMMAND} | jq -r '.html_url'")
+  URL_API=$(sh -c "${COMMAND} | jq -r '.url'")
   # shellcheck disable=SC2181
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 fi
@@ -190,7 +191,12 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!" 
-    gh api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge
+    curl \
+      -X PUT \
+      -H "Accept: application/vnd.github.v3+json" \
+      -u ${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}   \
+      "${URL_API}/merge" \
+      -d '{"Merging PR for ":"${INPUT_SOURCE_BRANCH}"}'
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

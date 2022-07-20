@@ -194,7 +194,7 @@ else
       -X PUT \
       -H "Accept: application/vnd.github.v3+json" \
       -u ${GITHUB_ACTOR}:${GITHUB_TOKEN} \
-      "https://api.github.com/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}merge" \
+      "https://api.github.com/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge" \
       -d '{"Merging PR for ":"${INPUT_SOURCE_BRANCH}"}'
   fi
   # Pass in other cases

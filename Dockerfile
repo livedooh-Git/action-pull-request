@@ -59,6 +59,7 @@ RUN chmod +x /entrypoint.sh ;\
     git \
     hub \
     curl \
+    gh \
     jq ;\
   apt-get clean ;\
   rm -rf /var/lib/apt/lists/*

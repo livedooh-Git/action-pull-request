@@ -193,7 +193,7 @@ else
     curl \
       -X PUT \
       -H "Accept: application/vnd.github.v3+json" \
-      -u ${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN}   \
+      -u ${GITHUB_ACTOR}:${GITHUB_TOKEN} \
       "https://api.github.com/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}merge" \
       -d '{"Merging PR for ":"${INPUT_SOURCE_BRANCH}"}'
   fi

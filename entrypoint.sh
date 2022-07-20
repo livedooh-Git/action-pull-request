@@ -190,7 +190,7 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!" 
-    hub api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge
+    hub api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge -d '{"Merging PR ":"${URL}"}'
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

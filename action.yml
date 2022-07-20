@@ -64,12 +64,16 @@ inputs:
     description: Allows to continue on merge commits with no diffs
     required: false
     default: "false"
+  repository:
+    description: Name of the repository to create a PR to
+    required: false
+    default: ""
 outputs:
   url:
     description: Pull request URL.
 runs:
   using: docker
-  image: docker://devopsinfra/action-pull-request:v0.5.0
+  image: './Dockerfile'
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
 branding:

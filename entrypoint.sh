@@ -191,9 +191,9 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     curl \
     -X PUT \
-    -H "Accept: application/vnd.github+json" \ 
+    -H "Accept: application/vnd.github.v3+json" \ 
     -H "Authorization: token ${INPUT_GITHUB_TOKEN}" \
-    ${URL}/merge
+    "${URL}/merge"
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

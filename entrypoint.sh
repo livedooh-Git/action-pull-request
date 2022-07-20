@@ -21,6 +21,7 @@ echo "  old_string: ${INPUT_OLD_STRING}"
 echo "  new_string: ${INPUT_NEW_STRING}"
 echo "  ignore_users: ${INPUT_IGNORE_USERS}"
 echo "  allow_no_diff: ${INPUT_ALLOW_NO_DIFF}"
+echo "  repository: ${INPUT_REPOSITORY}"
 
 # Skip whole script to not cause errors
 IFS=',' read -r -a IGNORE_USERS <<< "${INPUT_IGNORE_USERS}"
@@ -45,7 +46,7 @@ echo -e "\nSetting GitHub credentials..."
 # Prevents issues with: fatal: unsafe repository ('/github/workspace' is owned by someone else)
 git config --global --add safe.directory "${GITHUB_WORKSPACE}"
 git config --global --add safe.directory /github/workspace
-git remote set-url origin "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
+git remote set-url origin "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}"
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 # Needed for hub binary
@@ -106,7 +107,7 @@ if [[ -z "${PR_NUMBER}" ]]; then
     TEMPLATE="${GIT_LOG}"
   fi
 else
-  TEMPLATE=$(hub api --method GET "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" | jq -r '.body')
+  TEMPLATE=$(hub api --method GET "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}" | jq -r '.body')
 fi
 
 if [[ -n "${INPUT_OLD_STRING}" ]]; then
@@ -173,7 +174,7 @@ if [[ -z "${PR_NUMBER}" ]]; then
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 else
   echo -e "\nUpdating pull request"
-  COMMAND="hub api --method PATCH repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"
+  COMMAND="hub api --method PATCH repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"
   echo -e "Running: ${COMMAND}"
   URL=$(sh -c "${COMMAND} | jq -r '.html_url'")
   # shellcheck disable=SC2181

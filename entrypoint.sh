@@ -180,13 +180,21 @@ else
   # shellcheck disable=SC2181
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 fi
-
+  
 # Finish
 echo "::set-output name=url::${URL}"
 if [[ ${RET_CODE} != "0" ]]; then
   echo -e "\n[ERROR] Check log for errors."
   exit 1
 else
+    # Auto-merge PR if target branch is develop
+  if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
+    curl \
+    -X PUT \
+    -H "Accept: application/vnd.github+json" \ 
+    -H "Authorization: token ${INPUT_GITHUB_TOKEN}" \
+    ${URL}/merge
+  fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."
   echo -e "\n[INFO] See the pull request: ${URL}"

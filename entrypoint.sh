@@ -190,10 +190,10 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     curl \
-    -X PUT \
-    -H "Accept: application/vnd.github.v3+json" \ 
-    -H "Authorization: token ${INPUT_GITHUB_TOKEN}" \
-    "${URL}/merge"
+      -X PUT \
+      -H "Accept: application/vnd.github.v3+json" \ 
+      -u ${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN} \
+      "${URL}/merge"
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

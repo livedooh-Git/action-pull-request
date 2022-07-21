@@ -97,7 +97,9 @@ GIT_DIFF=$(git diff --compact-summary --no-color "origin/${TARGET_BRANCH}...orig
 GIT_DIFF=$(echo -e "${GIT_DIFF}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^NowALiNiA^/g')
 
 echo -e "\nSetting template..."
-export PR_NUMBER=$(hub pr list --head "${SOURCE_BRANCH}" --format '%I')
+PR_NUMBER=$(hub pr list --head "${SOURCE_BRANCH}" --format '%I')
+echo "${PR_NUMBER}"
+export PR_NUM=${PR_NUMBER}
 if [[ -z "${PR_NUMBER}" ]]; then
   if [[ -n "${INPUT_TEMPLATE}" ]]; then
     TEMPLATE=$(cat "${INPUT_TEMPLATE}")
@@ -190,10 +192,9 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!"
-    echo ${INPUT_REPOSITORY}
-    echo ${PR_NUMBER}
+    echo ${PR_NUM}
     export GH_TOKEN=${GITHUB_TOKEN}
-    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUM}/merge"
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

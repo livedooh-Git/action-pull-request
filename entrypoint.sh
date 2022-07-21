@@ -98,8 +98,6 @@ GIT_DIFF=$(echo -e "${GIT_DIFF}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^No
 
 echo -e "\nSetting template..."
 PR_NUMBER=$(hub pr list --head "${SOURCE_BRANCH}" --format '%I')
-echo "${SOURCE_BRANCH}"
-echo -e "${PR_NUMBER}"
 if [[ -z "${PR_NUMBER}" ]]; then
   if [[ -n "${INPUT_TEMPLATE}" ]]; then
     TEMPLATE=$(cat "${INPUT_TEMPLATE}")
@@ -194,6 +192,7 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     export GH_TOKEN=${GITHUB_TOKEN}
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+    git push origin --delete '${SOURCE_BRANCH}'
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

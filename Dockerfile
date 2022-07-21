@@ -58,7 +58,6 @@ RUN chmod +x /entrypoint.sh ;\
   apt-get install --no-install-recommends -y \
     git \
     hub \
-    curl \
     gh \
     jq ;\
   apt-get clean ;\

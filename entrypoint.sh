@@ -189,14 +189,9 @@ if [[ ${RET_CODE} != "0" ]]; then
 else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
-    echo "I got to here!!" 
-    hub api --method POST "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
-#     curl \
-#       -X PUT \
-#       -H "Accept: application/vnd.github.v3+json" \
-#       -u ${GITHUB_ACTOR}:${INPUT_GITHUB_TOKEN} \
-#       "https://api.github.com/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge" \
-#       -d '{"Merging PR for ":"${INPUT_SOURCE_BRANCH}"}'
+    echo "I got to here!!"
+    export GH_TOKEN=${INPUT_GITHUB_TOKEN}
+    gh api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

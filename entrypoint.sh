@@ -98,8 +98,8 @@ GIT_DIFF=$(echo -e "${GIT_DIFF}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^No
 
 echo -e "\nSetting template..."
 PR_NUMBER=$(hub pr list --head "${SOURCE_BRANCH}" --format '%I')
-echo "${PR_NUMBER}"
-export PR_NUM=${PR_NUMBER}
+echo "${SOURCE_BRANCH}"
+echo -e "${PR_NUMBER}"
 if [[ -z "${PR_NUMBER}" ]]; then
   if [[ -n "${INPUT_TEMPLATE}" ]]; then
     TEMPLATE=$(cat "${INPUT_TEMPLATE}")
@@ -172,8 +172,6 @@ if [[ -z "${PR_NUMBER}" ]]; then
   COMMAND="hub pull-request -b ${TARGET_BRANCH} -h ${SOURCE_BRANCH} --no-edit ${ARG_LIST[@]}"
   echo -e "\nRunning: ${COMMAND}"
   URL=$(sh -c "${COMMAND}")
-  COMMAND1="hub api --method PATCH repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"
-  URL1=$(sh -c "${COMMAND1} | jq -r '._links.self.href'")
   # shellcheck disable=SC2181
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 else
@@ -195,8 +193,7 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!"
     export GH_TOKEN=${GITHUB_TOKEN}
-    echo ${URL1}
-    gh api --method PUT -H "Accept: application/vnd.github+json" ${URL1}
+    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

@@ -172,6 +172,8 @@ if [[ -z "${PR_NUMBER}" ]]; then
   COMMAND="hub pull-request -b ${TARGET_BRANCH} -h ${SOURCE_BRANCH} --no-edit ${ARG_LIST[@]}"
   echo -e "\nRunning: ${COMMAND}"
   URL=$(sh -c "${COMMAND}")
+  COMMAND1="hub api --method PATCH repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"
+  URL1=$(sh -c "${COMMAND1} | jq -r '._links.self.href'")
   # shellcheck disable=SC2181
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 else
@@ -192,9 +194,9 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!"
-    echo ${PR_NUM}
     export GH_TOKEN=${GITHUB_TOKEN}
-    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUM}/merge"
+    echo ${URL1}
+    gh api --method PUT -H "Accept: application/vnd.github+json" ${URL1}
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

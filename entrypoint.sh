@@ -190,7 +190,9 @@ else
     # Auto-merge PR if target branch is develop
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     echo "I got to here!!"
-    export GH_TOKEN=${INPUT_GITHUB_TOKEN}
+    echo ${INPUT_REPOSITORY}
+    echo ${PR_NUMBER}
+    export GH_TOKEN=${GITHUB_TOKEN}
     gh api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge
   fi
   # Pass in other cases

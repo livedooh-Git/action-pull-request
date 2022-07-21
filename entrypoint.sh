@@ -84,17 +84,17 @@ fi
 echo -e "\nListing new commits in the source branch..."
 git log --graph --pretty=format:'%Cred%h%Creset - %Cblue%an%Creset - %Cgreen%cd%Creset %n%s %b' --abbrev-commit --date=format:'%Y-%m-%d %H:%M:%S' "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}"
 GIT_LOG=$(git log --graph --pretty=format:'%Cred%h%Creset - %Cblue%an%Creset - %Cgreen%cd%Creset %n%s%n%b' --abbrev-commit --date=format:'%Y-%m-%d %H:%M:%S' --no-color "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}")
-GIT_LOG=$(echo -e "${GIT_LOG}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^NowALiNiA^/g')
+GIT_LOG=$(echo -e "${GIT_LOG}" | sed 's|#|^HaSz^|g')
 
 echo -e "\n\nListing commits subjects in the source branch..."
 git log --reverse --pretty=format:'%s' --abbrev-commit "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}"
 GIT_SUMMARY=$(git log --reverse --pretty=format:'%s' --abbrev-commit "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}")
-GIT_SUMMARY=$(echo -e "${GIT_SUMMARY}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^NowALiNiA^/g')
+GIT_SUMMARY=$(echo -e "${GIT_SUMMARY}" | sed 's|#|^HaSz^|g')
 
 echo -e "\n\nListing files modified in the source branch..."
 git diff --compact-summary "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}"
 GIT_DIFF=$(git diff --compact-summary --no-color "origin/${TARGET_BRANCH}...origin/${SOURCE_BRANCH}")
-GIT_DIFF=$(echo -e "${GIT_DIFF}" | sed 's|#|^HaSz^|g' | sed ':a;N;$!ba; s/\n/^NowALiNiA^/g')
+GIT_DIFF=$(echo -e "${GIT_DIFF}" | sed 's|#|^HaSz^|g')
 
 echo -e "\nSetting template..."
 PR_NUMBER=$(hub pr list --head "${SOURCE_BRANCH}" --format '%I')

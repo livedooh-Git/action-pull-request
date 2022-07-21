@@ -134,6 +134,7 @@ TEMPLATE=$(echo -e "${TEMPLATE}" | sed 's|\^HaSz\^|#|g' | sed ':a;N;$!ba; s|\^No
 
 if [[ -z "${PR_NUMBER}" ]]; then
   echo -e "\nSetting all arguments..."
+  echo ${PR_NUMBER}
   if [[ -n "${INPUT_TITLE}" ]]; then
     TITLE=$(echo -e "${INPUT_TITLE}" | head -1)
   else
@@ -193,7 +194,7 @@ else
     echo ${INPUT_REPOSITORY}
     echo ${PR_NUMBER}
     export GH_TOKEN=${GITHUB_TOKEN}
-    gh api --method PUT -H "Accept: application/vnd.github+json" repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge
+    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

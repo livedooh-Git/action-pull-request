@@ -185,6 +185,7 @@ fi
   
 # Finish
 echo "::set-output name=url::${URL}"
+echo -e "${URL}"
 if [[ ${RET_CODE} != "0" ]]; then
   echo -e "\n[ERROR] Check log for errors."
   exit 1

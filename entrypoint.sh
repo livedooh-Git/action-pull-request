@@ -192,7 +192,7 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]]; then
     export GH_TOKEN=${GITHUB_TOKEN}
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
-    git push origin --delete '${SOURCE_BRANCH}'
+    git push origin --delete ${SOURCE_BRANCH}
   fi
   # Pass in other cases
   echo -e "\n[INFO] No errors found."

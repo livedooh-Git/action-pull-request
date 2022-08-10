@@ -189,7 +189,7 @@ if [[ ${RET_CODE} != "0" ]]; then
   exit 1
 else
     # Auto-merge PR if target branch is develop
-  if [[ "${INPUT_TARGET_BRANCH}" ==  "develop" ]] || [[ "${SOURCE_BRANCH}" == *"ad-exchange"* ]]; then
+  if [ "${INPUT_TARGET_BRANCH}" ==  "develop" ] || [ "${SOURCE_BRANCH}" == *"ad-exchange"* ]; then
     export GH_TOKEN=${GITHUB_TOKEN}
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
     git push origin --delete ${SOURCE_BRANCH}

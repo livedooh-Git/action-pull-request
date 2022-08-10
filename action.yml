@@ -73,7 +73,7 @@ outputs:
     description: Pull request URL.
 runs:
   using: docker
-  image: docker://livedooh/action-pull-request:latest
+  image: './Dockerfile'
   env:
     GITHUB_TOKEN: ${{ inputs.github_token }}
 branding:

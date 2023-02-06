@@ -180,10 +180,15 @@ else
   # shellcheck disable=SC2181
   if [[ "$?" != "0" ]]; then RET_CODE=1; fi
 fi
-  
+
+
 # Finish
-echo "::set-output name=url::${URL}"
-PR_NUMBER=$(echo ${URL} | awk 'BEGIN { FS = "/" } ; { print $7 }')
+{
+  echo "url=${URL}"
+  PR_NUMBER=$(echo ${URL} | awk 'BEGIN { FS = "/" } ; { print $7 }')
+  echo "pr_number=${PR_NUMBER}"
+} >> "$GITHUB_OUTPUT"
+
 if [[ ${RET_CODE} != "0" ]]; then
   echo -e "\n[ERROR] Check log for errors."
   exit 1

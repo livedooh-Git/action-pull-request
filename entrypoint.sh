@@ -201,8 +201,10 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" == "develop" ]] || [[ "${INPUT_SOURCE_BRANCH}" =~ "ad-exchange" ]]; then
     echo "Starting to pull target branch"
     export GH_TOKEN=${GITHUB_TOKEN}
-    git pull origin ${INPUT_TARGET_BRANCH} --rebase
-    echo "Creating PR"    
+    # git pull origin ${INPUT_TARGET_BRANCH} --rebase
+    echo "Update from origin"  
+    gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
+    echo "Creating PR"  
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
     git push origin --delete ${SOURCE_BRANCH}
   fi

@@ -22,6 +22,7 @@ echo "  new_string: ${INPUT_NEW_STRING}"
 echo "  ignore_users: ${INPUT_IGNORE_USERS}"
 echo "  allow_no_diff: ${INPUT_ALLOW_NO_DIFF}"
 echo "  repository: ${INPUT_REPOSITORY}"
+echo "  date_timestamp: ${INPUT_DATE_TIMESTAMP}"
 
 # Skip whole script to not cause errors
 IFS=',' read -r -a IGNORE_USERS <<< "${INPUT_IGNORE_USERS}"
@@ -54,6 +55,7 @@ export GITHUB_USER="${GITHUB_ACTOR}"
 
 echo -e "\nSetting branches..."
 SOURCE_BRANCH="${INPUT_SOURCE_BRANCH:-$(git symbolic-ref --short -q HEAD)}"
+SOURCE_BRANCH="${INPUT_SOURCE_BRANCH}-{INPUT_DATE_TIMESTAMP}"
 TARGET_BRANCH="${INPUT_TARGET_BRANCH:-master}"
 echo "Source branch: ${SOURCE_BRANCH}"
 echo "Target branch: ${TARGET_BRANCH}"

@@ -68,6 +68,10 @@ inputs:
     description: Name of the repository to create a PR to
     required: false
     default: ""
+  date_timestamp:
+    description: The timestamp to add to the branch
+    required: false
+    default: ""     
 outputs:
   url:
     description: Pull request URL.

@@ -205,7 +205,7 @@ else
     echo "Update from origin"  
     gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
     echo "Creating PR"
-    wait=$(( $RANDOM % 15 + 1 ))
+    wait=$((10 + $RANDOM % 10))
     echo "Sleep $wait"
     sleep $wait    
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"

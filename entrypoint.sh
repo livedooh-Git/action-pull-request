@@ -204,7 +204,10 @@ else
     # git pull origin ${INPUT_TARGET_BRANCH} --rebase
     echo "Update from origin"  
     gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
-    echo "Creating PR"  
+    echo "Creating PR"
+    wait=$(( $RANDOM % 15 + 1 ))
+    echo "Sleep $wait"
+    sleep $wait    
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
     git push origin --delete ${SOURCE_BRANCH}
   fi

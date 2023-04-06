@@ -201,26 +201,28 @@ else
   if [[ "${INPUT_TARGET_BRANCH}" == "develop" ]] || [[ "${INPUT_SOURCE_BRANCH}" =~ "ad-exchange" ]]; then
     echo "Starting to pull target branch"
     export GH_TOKEN=${GITHUB_TOKEN}
-    # git pull origin ${INPUT_TARGET_BRANCH} --rebase
-    echo "Update from origin"  
-    gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
+    # echo "Update from origin"  
+    # gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
     echo "Creating PR"
-    wait=$((10 + $RANDOM % 10))
-    echo "Sleep $wait"
-    sleep $wait
-    gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"    
-    gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
-    retVal=$?
-    echo "RetVal: $retVal"
-    if [[ $retVal -ne 0 ]]; then
-        echo "Pull request not mergable trying again"
-        echo "Sleep 5"
-        sleep 5
-        gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
-        gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
-    else
-        echo "Pull request merged"
-    fi
+    test=1
+    counter=1
+    until [[ test -eq 0 ]]; do
+      echo "try $counter"
+      echo "Updating"
+      gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"                
+      echo "Merging "
+      gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+      echo "Return code $?"
+      if [[ $? -eq 0 ]];
+      then
+        echo "Merge successfull"
+        test=0
+      else
+        echo "Merge not successful. Going for one more try"
+        echo "Counter increased"
+        counter=counter+1
+      fi
+    done    
     git push origin --delete ${SOURCE_BRANCH}
   fi
   # Pass in other cases

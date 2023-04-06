@@ -211,6 +211,7 @@ else
     gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"    
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
     retVal=$?
+    echo "RetVal: $retVal"
     if [ $retVal -ne 0 ]; then
         echo "Pull request not mergable trying again"
         echo "Sleep 5"

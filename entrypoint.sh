@@ -204,23 +204,23 @@ else
     # echo "Update from origin"  
     # gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
     echo "Creating PR"
-    test=1
+    RetVal=1
     counter=1
-    until [[ test -eq 0 ]]; do
+    until [[ RetVal -eq 0 ]]; do
       echo "try $counter"
       echo "Updating"
       gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"                
       echo "Merging "
-      gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
-      echo "Return code $?"
-      if [[ $? -eq 0 ]];
+      RetVal=${gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"}
+      echo "Return code $RetVal"
+      if [[ $RetVal -eq 0 ]];
       then
         echo "Merge successfull"
-        test=0
       else
         echo "Merge not successful. Going for one more try"
         echo "Counter increased"
         counter=counter+1
+        RetVal=1
       fi
     done    
     git push origin --delete ${SOURCE_BRANCH}

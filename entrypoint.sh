@@ -209,6 +209,13 @@ else
     echo "Sleep $wait"
     sleep $wait    
     gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+    retVal=$?
+    if [ $retVal -ne 0 ]; then
+        echo "Pull request not mergable trying again"
+        echo "Sleep 5"
+        sleep 5
+        gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+    fi
     git push origin --delete ${SOURCE_BRANCH}
   fi
   # Pass in other cases

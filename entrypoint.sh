@@ -217,6 +217,8 @@ else
         sleep 5
         gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"
         gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+    elif
+        echo "Pull request merged"
     fi
     git push origin --delete ${SOURCE_BRANCH}
   fi

@@ -211,7 +211,7 @@ else
       echo "Updating"
       gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"                
       echo "Merging "
-      RetVal=${gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"}
+      RetVal=$(gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge")
       echo "Return code $RetVal"
       if [[ $RetVal -eq 0 ]];
       then

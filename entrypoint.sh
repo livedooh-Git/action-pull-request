@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set +e
 
 # Return code
 RET_CODE=0
@@ -207,11 +207,12 @@ else
     RetVal=1
     counter=1
     until [[ RetVal -eq 0 ]]; do
-      echo "try $counter"
+      echo "Try $counter"
       echo "Updating"
       gh api --method PUT -H "Accept: application/vnd.github+json" "/repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/update-branch"                
       echo "Merging "
-      RetVal=$(gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge")
+      gh api --method PUT -H "Accept: application/vnd.github+json" "repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER}/merge"
+      RetVal=$?
       echo "Return code $RetVal"
       if [[ $RetVal -eq 0 ]];
       then
@@ -219,7 +220,7 @@ else
       else
         echo "Merge not successful. Going for one more try"
         echo "Counter increased"
-        counter=counter+1
+        ((counter++))
         RetVal=1
       fi
     done    

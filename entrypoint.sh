@@ -174,10 +174,26 @@ if [[ -z "${PR_NUMBER}" ]]; then
   cat /tmp/template
   # shellcheck disable=SC2016
   COMMAND="hub pull-request -b ${TARGET_BRANCH} -h ${SOURCE_BRANCH} --no-edit ${ARG_LIST[@]}"
-  echo -e "\nRunning: ${COMMAND}"
-  URL=$(sh -c "${COMMAND}")
-  # shellcheck disable=SC2181
-  if [[ "$?" != "0" ]]; then RET_CODE=1; fi
+  # Retry with backoff: concurrent component deploys create several PRs within seconds and GitHub's
+  # content-creation throttle intermittently rejects the later ones with HTTP 422 ("submitted too
+  # quickly") — observed 2026-07-22 (web-api, 5th create in ~30s, two runs in a row). Between
+  # attempts also re-check whether the PR actually landed, since a create can error after
+  # succeeding server-side.
+  CREATE_TRIES=4
+  for ((create_try=1; create_try<=CREATE_TRIES; create_try++)); do
+    echo -e "\nRunning (attempt ${create_try}/${CREATE_TRIES}): ${COMMAND}"
+    URL=$(sh -c "${COMMAND}")
+    # shellcheck disable=SC2181
+    if [[ "$?" == "0" && -n "${URL}" ]]; then RET_CODE=0; break; fi
+    RET_CODE=1
+    sleep $(( 20 * create_try ))
+    URL=$(hub pr list --head "${SOURCE_BRANCH}" --format '%U' | head -1)
+    if [[ -n "${URL}" ]]; then
+      echo "Pull request already exists for ${SOURCE_BRANCH}: ${URL}"
+      RET_CODE=0
+      break
+    fi
+  done
 else
   echo -e "\nUpdating pull request"
   COMMAND="hub api --method PATCH repos/${INPUT_REPOSITORY}/pulls/${PR_NUMBER} --field 'body=@/tmp/template'"

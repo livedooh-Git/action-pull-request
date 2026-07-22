@@ -47,7 +47,11 @@ echo -e "\nSetting GitHub credentials..."
 # Prevents issues with: fatal: unsafe repository ('/github/workspace' is owned by someone else)
 git config --global --add safe.directory "${GITHUB_WORKSPACE}"
 git config --global --add safe.directory /github/workspace
-git remote set-url origin "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}"
+# Authenticate as x-access-token, not ${GITHUB_ACTOR}: GitHub App actors are named "<app>[bot]" and
+# square brackets are invalid in a URL authority — hub then fails to recognize ANY GitHub remote
+# ("Aborted: could not find any git remote pointing to a GitHub repository"). The username is
+# irrelevant for token auth; x-access-token works for both PATs and App installation tokens.
+git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${INPUT_REPOSITORY}"
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 # Needed for hub binary

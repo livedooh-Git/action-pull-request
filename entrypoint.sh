@@ -138,6 +138,16 @@ if [[ "${INPUT_GET_DIFF}" ==  "true" ]]; then
 fi
 TEMPLATE=$(echo -e "${TEMPLATE}" | sed 's|\^HaSz\^|#|g' | sed ':a;N;$!ba; s|\^NowALiNiA\^|\n|g')
 
+# GitHub rejects PR bodies over 65536 characters with HTTP 422, which the retry below cannot fix.
+# Concurrent component deploys merge into the target branch while a job's shallow checkout of it goes
+# stale, and the commit list above can then cover the whole history (REL-11222). Only the body is
+# affected — the branch and its diff are fine — so cap the body rather than fail the deploy.
+BODY_LIMIT=60000
+if (( ${#TEMPLATE} > BODY_LIMIT )); then
+  echo -e "\n[WARN] PR body is ${#TEMPLATE} characters, over GitHub's limit; truncating to ${BODY_LIMIT}."
+  TEMPLATE="${TEMPLATE:0:BODY_LIMIT}"$'\n\n... (commit list truncated: longer than GitHub allows in a PR body)'
+fi
+
 if [[ -z "${PR_NUMBER}" ]]; then
   echo -e "\nSetting all arguments..."
   if [[ -n "${INPUT_TITLE}" ]]; then
